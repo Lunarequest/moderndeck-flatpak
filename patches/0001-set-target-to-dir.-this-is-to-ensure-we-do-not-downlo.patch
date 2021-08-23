@@ -1,0 +1,29 @@
+From f57aadc5f3dc248d5a3120105512e38cf8250950 Mon Sep 17 00:00:00 2001
+From: advaithm <advaith.madhukar@gmail.com>
+Date: Mon, 23 Aug 2021 10:13:31 +0530
+Subject: [PATCH 1/1] set target to dir. this is to ensure we don't download anything
+
+---
+ electron-builder.json | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/electron-builder.json b/electron-builder.json
+index 1605d59..5853375 100644
+--- a/electron-builder.json
++++ b/electron-builder.json
+@@ -139,11 +139,7 @@
+ 		"artifactName": "ModernDeck_${arch}.${ext}",
+ 		"target": [
+ 			{
+-				"target": "AppImage",
+-				"arch": [
+-					"x64",
+-					"arm64"
+-				]
++				"target": "dir"
+ 			}
+ 		]
+ 	}
+-- 
+2.33.0
+

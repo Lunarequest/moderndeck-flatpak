@@ -1,0 +1,75 @@
+app-id: com.dangeredwolf.ModernDeck
+base: org.electronjs.Electron2.BaseApp
+base-version: "20.08"
+runtime: org.freedesktop.Platform
+runtime-version: "20.08"
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node12
+command: start-moderndeck
+separate-locales: false
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=pulseaudio
+  - --share=network
+  - --device=dri
+  - --filesystem=xdg-videos:ro
+  - --filesystem=xdg-pictures:ro
+  - --filesystem=xdg-download
+modules:
+  - name: ModernDeck
+    buildsystem: simple
+    build-options:
+      # Add the node bin directory & yarn directory.
+      append-path: /usr/lib/sdk/node12/bin:/app/usr/bin
+      env:
+        XDG_CACHE_HOME: /run/build/ModernDeck/flatpak-node/cache
+        # more detailed error messages
+        NPM_CONFIG_LOGLEVEL: info
+        # Sets the directory where Node is located so way npm won't download the headers.
+        npm_config_nodedir: /usr/lib/sdk/node12
+          # Set the Electron cache directory.
+        ELECTRON_CACHE: "/run/build/ModernDeck/flatpak-node/cache/electron"
+        # Skip Electron related downloads
+        ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+    build-commands:
+      - touch .npmrc
+      - echo "cache=flatpak-node/npm-cache" > .npmrc
+      - npm install --cache flatpak-node/npm-cache
+      - npm run buildLinuxFlatpak
+      # arch can sometimes be in the dir its best to have a wild card
+      - cp -r dist/linux-*unpacked/* /app/bin/
+      - install -Dm 755 start-moderndeck.sh /app/bin/start-moderndeck
+    post-install:
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck16.png /app/share/icons/hicolor/16x16/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck24.png  /app/share/icons/hicolor/24x24/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck32.png  /app/share/icons/hicolor/32x32/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck44.png  /app/share/icons/hicolor/44x44/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck48.png  /app/share/icons/hicolor/48x48/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck50.png  /app/share/icons/hicolor/50x50/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck64.png  /app/share/icons/hicolor/64x64/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck128.png  /app/share/icons/hicolor/128x128/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck150.png  /app/share/icons/hicolor/150x150/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck256.png  /app/share/icons/hicolor/256x256/apps/$FLATPAK_ID.png
+      - install -Dm644 build/icons/ModernDeck10/ModernDeck512.png  /app/share/icons/hicolor/512x512/apps/$FLATPAK_ID.png
+      - install -D com.dangeredwolf.ModernDeck.desktop -t  /app/share/applications/
+      - install -D com.dangeredwolf.ModernDeck.metainfo.xml -t  /app/share/metainfo/
+    sources:
+      - generated-sources.json
+      - type: git
+        url: https://github.com/advaithm/ModernDeck.git
+        branch: "10.0"
+        commit: 2cdfa7e700316c69f62eeed9bf0e3172f420fe99
+      - type: file
+        url: https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z
+        sha256: d12ff7eb8f1d1ec4652ca5237a7fbdca33acc0c758045636feca62dc6ecb8ec4
+        dest: flatpak-node/cache
+      - type: file
+        path: com.dangeredwolf.ModernDeck.desktop
+      - type: file
+        path: com.dangeredwolf.ModernDeck.metainfo.xml
+      - type: script
+        dest-filename: start-moderndeck.sh
+        commands:
+          - FLATPAK_HOST=1 zypak-wrapper.sh /app/bin/moderndeck "$@"
