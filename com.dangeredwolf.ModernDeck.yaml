@@ -5,7 +5,7 @@ runtime: org.freedesktop.Platform
 runtime-version: "20.08"
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node12
+  - org.freedesktop.Sdk.Extension.node14
 command: start-moderndeck
 separate-locales: false
 finish-args:
@@ -22,13 +22,13 @@ modules:
     buildsystem: simple
     build-options:
       # Add the node bin directory & yarn directory.
-      append-path: /usr/lib/sdk/node12/bin:/app/usr/bin
+      append-path: /usr/lib/sdk/node14/bin:/app/usr/bin
       env:
         XDG_CACHE_HOME: /run/build/ModernDeck/flatpak-node/cache
         # more detailed error messages
         NPM_CONFIG_LOGLEVEL: info
         # Sets the directory where Node is located so way npm won't download the headers.
-        npm_config_nodedir: /usr/lib/sdk/node12
+        npm_config_nodedir: /usr/lib/sdk/node14
           # Set the Electron cache directory.
         ELECTRON_CACHE: "/run/build/ModernDeck/flatpak-node/cache/electron"
         # Skip Electron related downloads
@@ -60,7 +60,7 @@ modules:
       - type: git
         url: https://github.com/advaithm/ModernDeck.git
         branch: "10.0"
-        commit: 2cdfa7e700316c69f62eeed9bf0e3172f420fe99
+        commit: 79ea308ccada69b202ad07f9b6854342a2747e2c
       - type: file
         url: https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z
         sha256: d12ff7eb8f1d1ec4652ca5237a7fbdca33acc0c758045636feca62dc6ecb8ec4
