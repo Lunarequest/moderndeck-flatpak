@@ -72,4 +72,5 @@ modules:
       - type: script
         dest-filename: start-moderndeck.sh
         commands:
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
           - FLATPAK_HOST=1 zypak-wrapper.sh /app/bin/moderndeck "$@"
