@@ -24,14 +24,14 @@ modules:
       # Add the node bin directory & yarn directory.
       append-path: /usr/lib/sdk/node16/bin:/app/usr/bin
       env:
-        XDG_CACHE_HOME: /run/build/ModernDeck/flatpak-node/cache
         # more detailed error messages
         NPM_CONFIG_LOGLEVEL: info
         # Sets the directory where Node is located so way npm won't download the headers.
         npm_config_nodedir: /usr/lib/sdk/node16
         npm_config_cache: /run/build/ModernDeck/flatpak-node/npm-cache
         # Set the Electron cache directory.
-        ELECTRON_CACHE: "/run/build/ModernDeck/flatpak-node/electron-cache"
+        ELECTRON_CACHE: /run/build/ModernDeck/flatpak-node/cache/electron
+        TMPDIR: /run/build/ModernDeck/flatpak-node/tmp
         # Skip Electron related downloads
         ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
     build-commands:
@@ -39,6 +39,7 @@ modules:
       - echo "cache=flatpak-node/npm-cache" > .npmrc
       - npm install 
       - jq '.linux.target[0].target="dir"' <<<$(<electron-builder.json) > electron-builder.json
+      - jq 'del(.linux.target[0].arch)' <<<$(<electron-builder.json) > electron-builder.json
       - . flatpak-node/electron-builder-arch-args.sh; npm run --offline buildLinux -- $ELECTRON_BUILDER_ARCH_ARGS
       # arch can sometimes be in the dir its best to have a wild card
       - cp -r dist/linux-*unpacked/* /app/bin/
@@ -60,7 +61,7 @@ modules:
       - type: git
         url: https://github.com/dangeredwolf/ModernDeck.git
         branch: "9.2"
-        commit: 4faf889e785d63a078c134b815ab0573c9928497
+        commit: 83094d607e51c5609971a6a6d3e75e8dbe143604
       - type: file
         path: com.dangeredwolf.ModernDeck.desktop
       - type: file
